@@ -67,8 +67,11 @@ plugins:
 #    another_key: another_value
 lavalink:
   plugins:
+    - dependency: "com.github.topi314.lavasrc:lavasrc-plugin:4.7.0"
+      repository: "https://maven.lavalink.dev/releases"
+      snapshot: false
     - dependency: "dev.lavalink.youtube:youtube-plugin:1.13.2"
-      snapshot: false # Set to true if you want to use a snapshot version.
+      repository: "https://maven.lavalink.dev/releases"
 #    - dependency: "com.github.example:example-plugin:1.0.0" # required, the coordinates of your plugin
 #      repository: "https://maven.example.com/releases" # optional, defaults to the Lavalink releases repository by default
 #      snapshot: false # optional, defaults to false, used to tell Lavalink to use the snapshot repository instead of the release repository
