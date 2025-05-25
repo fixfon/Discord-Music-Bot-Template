@@ -129,7 +129,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
         setTimeout(() => {
             const currentChannel = oldState.guild.members.me?.voice.channel;
             if (currentChannel && currentChannel.members.size === 1 && currentChannel.members.has(client.user!.id)) {
-                player.destroy();
+                if(player) player.destroy();
                 
                 const textChannel = client.channels.cache.get(player.textChannelId);
                 if (textChannel instanceof TextChannel) {
@@ -142,11 +142,17 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 
 // Moonlink event handlers
 client.manager.on('trackStart', (player, track) => {
-    console.log(`Started playing ${track.title} in ${player.guildId}`);
+    const channel = client.channels.cache.get(player.textChannelId);
+    if (channel instanceof TextChannel) {
+        channel.send(`Started playing ${track.title} in ${player.guildId}`)
+    }
 });
 
 client.manager.on('trackEnd', (player, track) => {
-    console.log(`Finished playing ${track.title} in ${player.guildId}`);
+    const channel = client.channels.cache.get(player.textChannelId);
+    if (channel instanceof TextChannel) {
+        channel.send(`Finished playing ${track.title} in ${player.guildId}`)
+    }
 });
 
 client.manager.on('queueEnd', (player) => {
@@ -156,7 +162,7 @@ client.manager.on('queueEnd', (player) => {
         
         // Disconnect after a delay if no new tracks are added
         setTimeout(() => {
-            if (!player.playing && player.queue.size === 0) {
+            if (player && !player.playing && player.queue.size === 0) {
                 player.destroy();
                 if (channel) {
                     channel.send('Disconnected due to inactivity.');

@@ -38,7 +38,6 @@ const command: Command = {
             const player = interaction.client.manager.createPlayer(playerConfig);
 
             if (!player.connected) {
-                console.log('Attempting to connect to voice channel...');
                 try {
                     player.connect({ setMute: false, setDeaf: true });
                 } catch (error) {
@@ -49,11 +48,13 @@ const command: Command = {
             const searchOptions: SearchOptions = {
                 query,
                 requester: interaction.user.id,
+                source: "youtube"
             };
 
             const result = await interaction.client.manager.search(searchOptions);
 
             if (!result.tracks.length) {
+                player.destroy()
                 return interaction.editReply('No results found!');
             }
 
@@ -64,7 +65,6 @@ const command: Command = {
             switch (result.loadType) {
                 case 'playlist':
                   // For playlists, add all tracks to the queue
-                  console.log('result', result.playlistInfo)
                   player.queue.add(result.tracks);
                   embed.setDescription(`${result.playlistInfo.name}`)
                   embed.addFields(

@@ -5,17 +5,42 @@ server: # REST and WS server
     enabled: false # Whether to enable HTTP/2 support
 plugins:
   youtube:
-    enabled: true # Whether this source can be used.
-    allowSearch: true # Whether "ytsearch:" and "ytmsearch:" can be used.
-    allowDirectVideoIds: true # Whether just video IDs can match. If false, only complete URLs will be loaded.
-    allowDirectPlaylistIds: true # Whether just playlist IDs can match. If false, only complete URLs will be loaded.
-    # The clients to use for track loading. See below for a list of valid clients.
-    # Clients are queried in the order they are given (so the first client is queried first and so on...)
+    allowDirectPlaylistIds: true
+    allowDirectVideoIds: true
+    allowSearch: true
+    clientOptions:
+        ANDROID_MUSIC:
+            playback: false
+            playlistLoading: false
+            searching: false
+            videoLoading: true
+        MUSIC:
+            playback: false
+            playlistLoading: false
+            searching: true
+            videoLoading: false
+        TVHTML5EMBEDDED:
+            playback: true
+            playlistLoading: false
+            searching: false
+            videoLoading: true
+        WEB:
+            playback: false
+            playlistLoading: true
+            searching: true
+            videoLoading: false
+        WEBEMBEDDED:
+            playback: false
+            playlistLoading: false
+            searching: false
+            videoLoading: false
     clients:
-      - MUSIC
-      - ANDROID_VR
-      - WEB
-      - WEBEMBEDDED 
+        - MUSIC
+        - ANDROID_MUSIC
+        - WEB
+        - WEBEMBEDDED
+        - TVHTML5EMBEDDED
+    enabled: true
 #  name: # Name of the plugin
 #    some_key: some_value # Some key-value pair for the plugin
 #    another_key: another_value
