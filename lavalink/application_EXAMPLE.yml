@@ -21,8 +21,8 @@ plugins:
         youtube: true
     spotify:
         albumLoadLimit: 6
-        clientId: "538d800156734f5eb560a98daadb431b"
-        clientSecret: "cd19658a57e14286b1b1dead5a9c74de"
+        clientId: "client_id_here"
+        clientSecret: "client_secret_here"
         countryCode: TR
         playlistLoadLimit: 6
   youtube:
@@ -58,7 +58,7 @@ plugins:
     enabled: true
     oauth:
       enabled: true
-      refreshToken: "1//03NIcT2gGCQXsCgYIARAAGAMSNwF-L9IryTjERUZGbgMUamqHnibmJ68rGBjz0H_74X-PZSExSD4o60yPFFFbFKNeanrslKDs_zM"
+      refreshToken: "refresh_token_here"
       skipInitialization: true
 #  name: # Name of the plugin
 #    some_key: some_value # Some key-value pair for the plugin

@@ -27,7 +27,7 @@ const rest = new REST().setToken(process.env.DISCORD_TOKEN!);
 // Deploy commands
 export async function deployCommands() {
     try {
-        console.log(`Started refreshing ${commands.length} application (/) commands.`);
+        console.log(`[DEPLOY] Starting deployment of ${commands.length} application (/) commands...`);
 
         // The put method is used to fully refresh all commands
         const data = await rest.put(
@@ -35,8 +35,10 @@ export async function deployCommands() {
             { body: commands },
         );
 
-        console.log(`Successfully reloaded ${(data as any[]).length} application (/) commands.`);
+        console.log(`[DEPLOY] Successfully deployed ${(data as any[]).length} application (/) commands.`);
+        console.log('[DEPLOY] Commands will be available in a few minutes.');
     } catch (error) {
-        console.error(error);
+        console.error('[DEPLOY] Error deploying commands:', error);
+        throw error; // Re-throw to handle it in the calling code
     }
 } 
