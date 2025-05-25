@@ -148,12 +148,12 @@ client.manager.on('trackStart', (player, track) => {
     }
 });
 
-client.manager.on('trackEnd', (player, track) => {
-    const channel = client.channels.cache.get(player.textChannelId);
-    if (channel instanceof TextChannel) {
-        channel.send(`Finished playing ${track.title}`)
-    }
-});
+// client.manager.on('trackEnd', (player, track) => {
+//     const channel = client.channels.cache.get(player.textChannelId);
+//     if (channel instanceof TextChannel) {
+//         channel.send(`Finished playing ${track.title}`)
+//     }
+// });
 
 client.manager.on('queueEnd', (player) => {
     const channel = client.channels.cache.get(player.textChannelId);
