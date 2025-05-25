@@ -30,11 +30,6 @@ plugins:
     allowDirectVideoIds: true
     allowSearch: true
     clientOptions:
-        ANDROID_MUSIC:
-            playback: false
-            playlistLoading: false
-            searching: false
-            videoLoading: true
         MUSIC:
             playback: false
             playlistLoading: false
@@ -57,11 +52,14 @@ plugins:
             videoLoading: false
     clients:
         - MUSIC
-        - ANDROID_MUSIC
         - WEB
         - WEBEMBEDDED
         - TVHTML5EMBEDDED
     enabled: true
+    oauth:
+      enabled: true
+      # refreshToken: "your refresh token"
+      # skipInitialization: true
 #  name: # Name of the plugin
 #    some_key: some_value # Some key-value pair for the plugin
 #    another_key: another_value
