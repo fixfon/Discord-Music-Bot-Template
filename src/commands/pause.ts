@@ -23,7 +23,7 @@ const command: Command = {
             });
         }
 
-        await player.pause();
+        player.pause();
         await interaction.reply('⏸️ Music paused!');
     },
 };

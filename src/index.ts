@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, Collection, Partials } from 'discord.js';
+import { Client, GatewayIntentBits, Collection, Partials, TextChannel } from 'discord.js';
 import { Manager } from 'moonlink.js';
 import { config } from 'dotenv';
 import { deployCommands } from './utils/deployCommands';
@@ -34,23 +34,22 @@ const manager = new Manager({
             secure: process.env.LAVALINK_SECURE === 'true'
         }
     ],
-    options: {},
-    // options: {
-    //     defaultPlatformSearch: 'youtube',
-    //     sortTypeNode: 'players',
-    //     plugins: [
-    //         {
-    //             name: 'youtube',
-    //             version: '1.13.2',
-    //             load: (manager: any) => {
-    //                 console.log('Youtube plugin loaded');
-    //             },
-    //             unload: (manager: any) => {
-    //                 console.log('Youtube plugin unloaded');
-    //             }
-    //         }
-    //     ],
-    // },
+    options: {
+        defaultPlatformSearch: 'youtube',
+        sortTypeNode: 'players',
+        plugins: [
+            {
+                name: 'youtube',
+                version: '1.13.2',
+                load: (manager: any) => {
+                    console.log('Youtube plugin loaded');
+                },
+                unload: (manager: any) => {
+                    console.log('Youtube plugin unloaded');
+                }
+            }
+        ],
+    },
     sendPayload: (guildId: string, payload: any) => {
         const guild = client.guilds.cache.get(guildId);
         if (guild) guild.shard.send(JSON.parse(payload));
@@ -118,10 +117,32 @@ client.on('raw', (packet) => {
     client.manager.packetUpdate(packet);
 });
 
+client.on('voiceStateUpdate', (oldState, newState) => {
+    const player = client.manager.players.get(oldState.guild.id);
+    if (!player) return;
+
+    const voiceChannel = oldState.guild.members.me?.voice.channel;
+    if (!voiceChannel) return;
+
+    if (voiceChannel.members.size === 1 && voiceChannel.members.has(client.user!.id)) {
+        // Set a timeout to destroy the player if still alone after 30 seconds
+        setTimeout(() => {
+            const currentChannel = oldState.guild.members.me?.voice.channel;
+            if (currentChannel && currentChannel.members.size === 1 && currentChannel.members.has(client.user!.id)) {
+                player.destroy();
+                
+                const textChannel = client.channels.cache.get(player.textChannelId);
+                if (textChannel instanceof TextChannel) {
+                    textChannel.send('Left voice channel due to inactivity.');
+                }
+            }
+        }, 30000);
+    }
+});
+
 // Moonlink event handlers
 client.manager.on('trackStart', (player, track) => {
     console.log(`Started playing ${track.title} in ${player.guildId}`);
-    console.log('track ', track)
 });
 
 client.manager.on('trackEnd', (player, track) => {
@@ -129,9 +150,29 @@ client.manager.on('trackEnd', (player, track) => {
 });
 
 client.manager.on('queueEnd', (player) => {
-    console.log(`Queue ended in ${player.guildId}`);
-    player.destroy();
+    const channel = client.channels.cache.get(player.textChannelId);
+    if (channel instanceof TextChannel) {
+        channel.send('Queue ended. Disconnecting in 30 seconds if no new tracks are added.');
+        
+        // Disconnect after a delay if no new tracks are added
+        setTimeout(() => {
+            if (!player.playing && player.queue.size === 0) {
+                player.destroy();
+                if (channel) {
+                    channel.send('Disconnected due to inactivity.');
+                }
+            }
+        }, 30000); // 30 seconds
+    }
 });
+
+client.manager.on('playerMoved', (player) => {
+    if(player.connected && player.queue.size > 0 && player.paused) player.resume()
+})
+
+client.manager.on('playerDisconnected', (player) => {
+    if(player) player.destroy();
+})
 
 client.manager.on('nodeConnected', (node) => {
     console.log(`Node ${node.identifier} connected!`);
@@ -139,10 +180,6 @@ client.manager.on('nodeConnected', (node) => {
 
 client.manager.on('nodeError', (node, error) => {
     console.error(`Node ${node.identifier} error:`, error);
-});
-
-client.on('voiceStateUpdate', (oldState, newState) => {
-    console.log(`Voice state updated for ${oldState.member?.user.username} in ${oldState.guild.name}`);
 });
 
 // Login to Discord

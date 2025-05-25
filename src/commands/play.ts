@@ -14,7 +14,6 @@ const command: Command = {
     
     async execute(interaction: ChatInputCommandInteraction) {
         const query = interaction.options.getString('query', true);
-        console.log(query);
         const member = interaction.guild?.members.cache.get(interaction.user.id);
         const voiceChannel = member?.voice.channel;
 
@@ -33,8 +32,7 @@ const command: Command = {
                 voiceChannelId: voiceChannel.id,
                 textChannelId: interaction.channelId,
                 autoPlay: false,
-                autoLeave: false,
-                volume: 100,
+                volume: 80,
             };
 
             const player = interaction.client.manager.createPlayer(playerConfig);
@@ -43,9 +41,7 @@ const command: Command = {
                 console.log('Attempting to connect to voice channel...');
                 try {
                     player.connect({ setMute: false, setDeaf: true });
-                    console.log('Successfully connected to voice channel');
                 } catch (error) {
-                    console.error('Failed to connect to voice channel:', error);
                     return interaction.editReply('Failed to connect to voice channel. Please check if the bot has the necessary permissions.');
                 }
             }
@@ -61,29 +57,20 @@ const command: Command = {
                 return interaction.editReply('No results found!');
             }
 
-            // const track = result.tracks[0];
-            // console.log('Selected track:', track);
-            // player.queue.add(track);
-            // console.log('Track added to queue');
-
             const embed = new EmbedBuilder()
             .setColor('#0099ff')
             .setTitle('Added to Queue')
-            // .setDescription(`[${track.title}](${track.url})`)
-            // .addFields(
-            //     { name: 'Duration', value: `${Math.floor(track.duration / 60000)}:${((track.duration % 60000) / 1000).toFixed(0).padStart(2, '0')}`, inline: true },
-            //     { name: 'Requested by', value: interaction.user.toString(), inline: true }
-            // );
 
             switch (result.loadType) {
                 case 'playlist':
                   // For playlists, add all tracks to the queue
+                  console.log('result', result.playlistInfo)
                   player.queue.add(result.tracks);
-                  
-                  embed.setDescription(`[${result.tracks[0].title}](${result.tracks[0].url})`)
+                  embed.setDescription(`${result.playlistInfo.name}`)
                   embed.addFields(
-                      { name: 'Duration', value: `${Math.floor(result.tracks[0].duration / 60000)}:${((result.tracks[0].duration % 60000) / 1000).toFixed(0).padStart(2, '0')}`, inline: true },
-                      { name: 'Requested by', value: interaction.user.toString(), inline: true }
+                    { name: 'Total Song Count', value: result.tracks.length.toString(), inline: true },
+                    { name: 'Duration', value: `${Math.floor(result.playlistInfo.duration / 60000)}:${((result.playlistInfo.duration % 60000) / 1000).toFixed(0).padStart(2, '0')}`, inline: true },
+                    { name: 'Requested by', value: interaction.user.toString(), inline: true }
                   );
 
                   // Start playback if not already playing
@@ -97,8 +84,8 @@ const command: Command = {
                   
                   embed.setDescription(`[${result.tracks[0].title}](${result.tracks[0].url})`)
                   embed.addFields(
-                      { name: 'Duration', value: `${Math.floor(result.tracks[0].duration / 60000)}:${((result.tracks[0].duration % 60000) / 1000).toFixed(0).padStart(2, '0')}`, inline: true },
-                      { name: 'Requested by', value: interaction.user.toString(), inline: true }
+                    { name: 'Duration', value: `${Math.floor(result.tracks[0].duration / 60000)}:${((result.tracks[0].duration % 60000) / 1000).toFixed(0).padStart(2, '0')}`, inline: true },
+                    { name: 'Requested by', value: interaction.user.toString(), inline: true }
                   );
 
                   // Start playback if not already playing
@@ -115,13 +102,6 @@ const command: Command = {
                   embed.setDescription(`Error loading track: ${result.error || 'Unknown error'}`);
                   break;
               }
-
-            // if (!player.playing) {
-            //     console.log('Starting playback...');
-            //     player.play();
-            //     console.log('Playback started');
-            // }
-
 
             await interaction.editReply({ embeds: [embed] });
         } catch (error) {

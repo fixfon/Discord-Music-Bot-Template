@@ -23,7 +23,7 @@ const command: Command = {
             });
         }
 
-        await player.skip();
+        player.skip();
         await interaction.reply('⏭️ Skipped to the next song!');
     },
 };

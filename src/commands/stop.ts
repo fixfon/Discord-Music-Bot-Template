@@ -16,7 +16,7 @@ const command: Command = {
             });
         }
 
-        await player.destroy();
+        player.destroy();
         await interaction.reply('⏹️ Music stopped and queue cleared!');
     },
 };
