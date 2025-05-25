@@ -58,8 +58,8 @@ plugins:
     enabled: true
     oauth:
       enabled: true
-      # refreshToken: "your refresh token"
-      # skipInitialization: true
+      refreshToken: "1//03NIcT2gGCQXsCgYIARAAGAMSNwF-L9IryTjERUZGbgMUamqHnibmJ68rGBjz0H_74X-PZSExSD4o60yPFFFbFKNeanrslKDs_zM"
+      skipInitialization: true
 #  name: # Name of the plugin
 #    some_key: some_value # Some key-value pair for the plugin
 #    another_key: another_value
