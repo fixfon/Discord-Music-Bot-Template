@@ -4,6 +4,27 @@ server: # REST and WS server
   http2:
     enabled: false # Whether to enable HTTP/2 support
 plugins:
+  lavasrc:
+    lyrics-sources:
+        deezer: false
+        spotify: false
+        youtube: false
+    providers:
+        - ytsearch:"%ISRC%"
+        - ytsearch:%QUERY%
+    sources:
+        applemusic: false
+        deezer: false
+        flowerytts: false
+        spotify: true
+        yandexmusic: false
+        youtube: true
+    spotify:
+        albumLoadLimit: 6
+        clientId: "538d800156734f5eb560a98daadb431b"
+        clientSecret: "cd19658a57e14286b1b1dead5a9c74de"
+        countryCode: TR
+        playlistLoadLimit: 6
   youtube:
     allowDirectPlaylistIds: true
     allowDirectVideoIds: true

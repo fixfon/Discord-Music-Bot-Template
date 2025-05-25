@@ -144,14 +144,14 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 client.manager.on('trackStart', (player, track) => {
     const channel = client.channels.cache.get(player.textChannelId);
     if (channel instanceof TextChannel) {
-        channel.send(`Started playing ${track.title} in ${player.guildId}`)
+        channel.send(`Started playing ${track.title}`)
     }
 });
 
 client.manager.on('trackEnd', (player, track) => {
     const channel = client.channels.cache.get(player.textChannelId);
     if (channel instanceof TextChannel) {
-        channel.send(`Finished playing ${track.title} in ${player.guildId}`)
+        channel.send(`Finished playing ${track.title}`)
     }
 });
 
